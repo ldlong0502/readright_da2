@@ -1,0 +1,108 @@
+import 'package:ebook/theme/theme_config.dart';
+import 'package:ebook/util/const.dart';
+import 'package:flutter/material.dart';
+
+import '../../configs/constants.dart';
+import '../audio_books/audio_book_component.dart';
+
+class Test extends StatefulWidget {
+  const Test({super.key});
+
+  @override
+  State<Test> createState() => _TestState();
+}
+
+class _TestState extends State<Test> {
+  late ScrollController scrollController;
+  bool isShowTitle = false;
+  @override
+  void initState() {
+    super.initState();
+    scrollController = ScrollController();
+    scrollController.addListener(() {
+      if (scrollController.offset >= 100) {
+        setState(() {
+          isShowTitle = true;
+        });
+      } else {
+        setState(() {
+          isShowTitle = false;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: CustomScrollView(
+        controller: scrollController,
+        slivers: [
+          SliverAppBar(
+            expandedHeight: size.height * 0.6,
+            title: isShowTitle
+                ? const Text(
+                    'Sách Nói',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  )
+                : null,
+            centerTitle: true,
+            iconTheme: const IconThemeData(color: Colors.white),
+            bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(20),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
+                    ),
+                  ),
+                  width: double.infinity,
+                  child: const Text(''),
+                )),
+            automaticallyImplyLeading: true,
+            backgroundColor: ThemeConfig.lightAccent,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: linearDecoration,
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Colors.grey[350]!.withOpacity(0.2),
+                        child: Image.asset(
+                          'assets/images/audio_book.png',
+                          height: 50,
+                        )),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Text(
+                      'Sách Nói',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: AudioBookComponent(),
+          )
+        ],
+      ),
+    );
+  }
+}
